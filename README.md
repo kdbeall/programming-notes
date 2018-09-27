@@ -1,1 +1,1 @@
-# programming-notes
+# python-notes
