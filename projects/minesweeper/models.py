@@ -6,9 +6,9 @@ import random
 class Board:
     """ Represents a board with squares. """
 
-    def __init__(self, cols, rows):
-        self.cols = cols
+    def __init__(self, rows, cols):
         self.rows = rows
+        self.cols = cols
         self.number_of_mines = 0
         self.max_mines = (cols-1)*(rows-1)
         mines_percentage = 100 * self.max_mines / (rows*cols)

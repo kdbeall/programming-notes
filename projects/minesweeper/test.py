@@ -5,6 +5,7 @@
 
 import unittest
 from models import Square, Board
+from game import Game
 
 
 class TestSquare(unittest.TestCase):
@@ -22,13 +23,12 @@ class TestSquare(unittest.TestCase):
 class TestBoard(unittest.TestCase):
 
     def test_board__init__(self):
-        """ Tests the Board __init__. """
         board = Board(3, 3)
         self.assertEqual(3, board.cols)
         self.assertEqual(3, board.rows)
 
     def test_board__init__percentage(self):
-        """ Tests percentages are calculated correctly. """
+        """ Tests mine percentages are calculated correctly. """
         rows = 5
         cols = 5
         max_mines = (cols-1)*(rows-1)
@@ -38,6 +38,13 @@ class TestBoard(unittest.TestCase):
     def test_board_get_square(self):
         board = Board(3, 3)
         self.assertFalse(board.get_square(0, 0).clicked)
+
+
+class TestGame(unittest.TestCase):
+    def test_game__init__(self):
+        game = Game()
+        self.assertEqual(10, game.board.rows)
+        self.assertEqual(10, game.board.cols)
 
 
 if __name__ == '__main__':
