@@ -12,10 +12,10 @@ class TestSquare(unittest.TestCase):
     def test_square__init__(self):
         """ Tests the Square __init__. """
         square = Square(False)
-        self.assertFalse(square.has_mine)
+        self.assertFalse(square.mine)
         self.assertFalse(square.clicked)
         square = Square(True)
-        self.assertTrue(square.has_mine)
+        self.assertTrue(square.mine)
         self.assertFalse(square.clicked)
 
 
@@ -26,6 +26,14 @@ class TestBoard(unittest.TestCase):
         board = Board(3, 3)
         self.assertEqual(3, board.cols)
         self.assertEqual(3, board.rows)
+
+    def test_board__init__percentage(self):
+        """ Tests percentages are calculated correctly. """
+        rows = 5
+        cols = 5
+        max_mines = (cols-1)*(rows-1)
+        mines_percent = 100 * max_mines / (rows*cols)
+        self.assertEqual(64, mines_percent)
 
     def test_board_get_square(self):
         board = Board(3, 3)
