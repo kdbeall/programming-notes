@@ -1,17 +1,25 @@
 """ Data models for a Minesweeper CLI game. """
 
+import random
+
 
 class Board:
     """ Represents a board with squares. """
 
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-        self.__create_squares(self.x, self.y)
+    def __init__(self, cols, rows):
+        self.cols = cols
+        self.rows = rows
+        self._create_squares(self.cols, self.rows)
 
-    def __create_squares(self, x, y):
-        self.squares = []
-        return
+    def _create_squares(self, cols, rows):
+        self.squares = [[Square(has_mine=False)
+                        for _ in range(cols)] for _ in range(rows)]
+
+    def _is_mine(self, percent):
+        return random.randrange(100) < percent
+
+    def get_square(self, x, y):
+        return self.squares[x][y]
 
 
 class Square:
