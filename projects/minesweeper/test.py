@@ -5,7 +5,7 @@
 
 import unittest
 from models import Square, Board
-from game import Game
+from game import Game, GameState
 
 
 class TestSquare(unittest.TestCase):
@@ -44,7 +44,20 @@ class TestGame(unittest.TestCase):
     def test_game__init__(self):
         game = Game()
         self.assertEqual(10, game.board.rows)
-        self.assertEqual(10, game.board.cols)
+        self.assertEqual(GameState.on_going, game.game_state)
+
+    def test_game_click_square(self):
+        """
+            Checks that the game is properly updated
+            when a square is clicked.
+        """
+        game = Game()
+        game.click_square(0, 0)
+        self.assertTrue(game.board.get_square(0, 0).clicked)
+        game.board.get_square(0, 1).mine = True
+        game.click_square(0, 1)
+        self.assertEqual(GameState.lose, game.game_state)
+
 
 
 if __name__ == '__main__':

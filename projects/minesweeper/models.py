@@ -22,7 +22,7 @@ class Board:
                         for _ in range(cols)] for _ in range(rows)]
 
     def _is_mine(self, mines_percentage):
-        """ Determine if a square is a mine. """
+        """ Determine if a square is a mine while generating the board. """
         is_mine = random.randrange(100) < mines_percentage
         if is_mine:
             if self.number_of_mines >= self.max_mines:

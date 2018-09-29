@@ -17,7 +17,6 @@ class Game:
 
     def click_square(self, x, y):
         square = self.board.get_square(x, y)
+        square.clicked = True
         if square.mine:
             self.game_state = GameState.lose
-            return
-        square.clicked = True
