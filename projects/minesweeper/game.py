@@ -20,3 +20,6 @@ class Game:
         square.clicked = True
         if square.mine:
             self.game_state = GameState.lose
+
+    def print_board(self):
+        pass

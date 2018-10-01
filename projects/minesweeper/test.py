@@ -12,13 +12,19 @@ class TestSquare(unittest.TestCase):
 
     def test_square__init__(self):
         """ Tests the Square __init__. """
-        square = Square(False)
+        board = Board(3, 3)
+        square = Square(board, 0 ,0, False)
         self.assertFalse(square.mine)
         self.assertFalse(square.clicked)
-        square = Square(True)
+        square = Square(board, 0, 0, True)
         self.assertTrue(square.mine)
         self.assertFalse(square.clicked)
 
+    def test_square_neighbors(self):
+        """ Tests getting a squares neighbors. """
+        board = Board(2, 2)
+        square = Square(board, 0 ,0, False)
+        print(square.neighbors())
 
 class TestBoard(unittest.TestCase):
 
