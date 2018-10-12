@@ -15,7 +15,7 @@ class Game:
     def play(self):
         self.welcome()
         while self.board.game_state in [GameState.on_going, GameState.start]:
-            self.board.print_board()
+            self.board.print_board_wrapper(self.board.print_board_hook)
             try:
                 raw = input("> ")
                 line = "".join(raw.split())
@@ -33,11 +33,10 @@ class Game:
                 except SystemExit:
                     os._exit(0)
         if self.board.game_state == GameState.lose:
-            print("\nYou hit a mine. :(\n")
-            self.board.print_board_end()
+            print("\n\nYou hit a mine. :(\n")
         else:
-            print("\nYou win!\n")            
-            self.board.print_board_end()
+            print("\n\nYou win!\n")            
+        self.board.print_board_wrapper(self.board.print_board_end_hook)
 
     def welcome(self):
         print("\nWelcome to PySweeper!")

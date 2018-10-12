@@ -24,10 +24,8 @@ class Board:
     
 
     def flag_square(self, row, col):
-        if not self.__valid_square(row, col):
-            return False
-        if self.__get_square(row, col).clicked:
-            return False
+        if not self.__valid_square(row, col) or self.__get_square(row, col).clicked:
+            return
         square = self.squares[row][col]
         square.flag = not square.flag
 
@@ -57,13 +55,7 @@ class Board:
         if self.__win():
             self.game_state = GameState.win
 
-    def print_board(self):
-        """
-            Prints the board. If a square is clicked, 
-            print the number of neighboring mines.
-            If the square is flagged, print "f".
-            Else print ".".
-        """
+    def print_board_wrapper(self, print_hook):
         print("\n")
         col_print = "    "
         for i in range(0, self.cols):
@@ -71,32 +63,27 @@ class Board:
         print(col_print + "\n")
         for i,row in enumerate(self.squares):
             row_print = str(i) + "  "
-            for i, square in enumerate(row):
-                if square.clicked:
-                    row_print += " " + str(square.mine_neighbors()) + " "
-                elif square.flag:
-                    row_print += " f "
-                else:
-                    row_print += " . "
-            print(row_print + "\n\n")
+            for square in row:
+                row_print += print_hook(square)
+            print(row_print + "\n")
 
-    def print_board_end(self):
-        col_print = "    "
-        for i in range(0, self.cols):
-            col_print += str(i) + "  "
-        print(col_print + "\n")
-        for i,row in enumerate(self.squares):
-            row_print = str(i) + "  "
-            for i, square in enumerate(row):
-                if square.mine:
-                    row_print += " x "
-                elif square.clicked:
-                    row_print += " " + str(square.mine_neighbors()) + " "
-                elif square.flag:
-                    row_print += " f "    
-                else:
-                    row_print += " . "
-            print(row_print + "\n\n")
+    def print_board_hook(self, square):
+        """
+            Prints the board. If a square is clicked, 
+            print the number of neighboring mines.
+            If the square is flagged, print "f".
+            Else print ".".
+        """
+        if square.clicked:
+            return " " + str(square.mine_neighbors()) + " "
+        elif square.flag:
+            return " f "
+        return " . "
+
+    def print_board_end_hook(self, square):
+        if square.mine:
+            return " x "
+        return self.print_board_hook(square)
         
 
     def __win(self):
