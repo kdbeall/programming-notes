@@ -16,51 +16,40 @@ class Game:
         self.welcome()
         while self.board.game_state in [GameState.on_going, GameState.start]:
             self.board.print_board()
-            print("")
             try:
                 raw = input("> ")
-                raw = "".join(raw.split())
-                if raw[0] == "f":
-                    raw = raw[1:]
-                    point = tuple(map(int, raw.split(",")))
+                line = "".join(raw.split())
+                if line[0] == "f":
+                    point = tuple(map(int, line[1:].split(",")))
                     self.board.flag_square(point[0], point[1])
                 else:
-                    point = tuple(map(int, raw.split(",")))
+                    point = tuple(map(int, line.split(",")))
                     self.board.click_square(point[0], point[1])
             except (IndexError, ValueError):
-                print("")
                 self.help()
             except KeyboardInterrupt:
                 try:
                     sys.exit(0)
                 except SystemExit:
                     os._exit(0)
-            print("")
         if self.board.game_state == GameState.lose:
-            print("You hit a mine. :(")
-            print("")
+            print("\nYou hit a mine. :(\n")
             self.board.print_board_end()
-            print("")
         else:
-            print("You win!")
-            print("")
+            print("\nYou win!\n")            
             self.board.print_board_end()
-            print("")
 
     def welcome(self):
-        print("")
-        print("Welcome to PySweeper!" + "\n")
+        print("\nWelcome to PySweeper!")
         self.help()
     
     def help(self):
-        print("Enter coordinates")
+        print("\nEnter coordinates")
         print("> <row>,<column>")
         print("> 1,1")
-        print("") 
         print("Flag and unflag coordinates")
         print("> f <row>,<column>")
         print("> f 1,1")
-        print("")
 
 if __name__ == "__main__":
     game = Game()

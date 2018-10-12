@@ -1,4 +1,4 @@
-""" Data models for a Minesweeper CLI game. """
+""" Data models for a minesweeper CLI game. """
 
 import random
 import itertools
@@ -11,7 +11,7 @@ class GameState(Enum):
     on_going = 3
 
 class Board:
-    """ Represents a board with squares. """
+    """ Represents a minesweeper board with squares. """
 
     def __init__(self, rows, cols):
         self.rows = rows
@@ -36,10 +36,8 @@ class Board:
             Click the square and click its
             neighbors which don't have neighboring mines.
         """
-        if not self.__valid_square(row, col):
-            return False
-        if self.__get_square(row, col).clicked:
-            return False
+        if not self.__valid_square(row, col) or self.__get_square(row, col).clicked:
+            return
         square = self.squares[row][col]
         if self.game_state == GameState.start:
             square.mine = False
@@ -48,7 +46,7 @@ class Board:
             self.game_state = GameState.on_going
         if square.mine:
             self.game_state = GameState.lose
-            return True
+            return
         square.clicked = True
         if square.mine_neighbors() == 0:
             for neighbor in square.neighbors():
@@ -58,18 +56,19 @@ class Board:
                     neighbor.clicked = True
         if self.__win():
             self.game_state = GameState.win
-        return True
 
     def print_board(self):
         """
             Prints the board. If a square is clicked, 
-            print the number of neighboring mines. Else print ".".
+            print the number of neighboring mines.
+            If the square is flagged, print "f".
+            Else print ".".
         """
+        print("\n")
         col_print = "    "
         for i in range(0, self.cols):
             col_print += str(i) + "  "
-        print(col_print)
-        print("")
+        print(col_print + "\n")
         for i,row in enumerate(self.squares):
             row_print = str(i) + "  "
             for i, square in enumerate(row):
@@ -79,16 +78,13 @@ class Board:
                     row_print += " f "
                 else:
                     row_print += " . "
-            print(row_print)
-            print("")
-
+            print(row_print + "\n\n")
 
     def print_board_end(self):
         col_print = "    "
         for i in range(0, self.cols):
             col_print += str(i) + "  "
-        print(col_print)
-        print("")
+        print(col_print + "\n")
         for i,row in enumerate(self.squares):
             row_print = str(i) + "  "
             for i, square in enumerate(row):
@@ -100,10 +96,8 @@ class Board:
                     row_print += " f "    
                 else:
                     row_print += " . "
-            print(row_print)
-            print("")
+            print(row_print + "\n\n")
         
-
 
     def __win(self):
         for row in self.squares:
