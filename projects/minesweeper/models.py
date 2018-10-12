@@ -2,6 +2,13 @@
 
 import random
 import itertools
+from enum import Enum
+
+class GameState(Enum):
+    start = 0
+    win = 1
+    lose = 2
+    on_going = 3
 
 class Board:
     """ Represents a board with squares. """
@@ -9,17 +16,75 @@ class Board:
     def __init__(self, rows, cols):
         self.rows = rows
         self.cols = cols
+        self.game_state = GameState.start
         self.number_of_mines = 0
         self.max_mines = (cols-1)*(rows-1)
-        mines_percentage = 100 * self.max_mines / (rows*cols)
+        mines_percentage = (100 * self.max_mines / (rows*cols))/3
         self.__create_squares(self.cols, self.rows, mines_percentage)
+    
+    def click_square(self, row, col):
+        """ 
+            Click the square and click its
+            neighbors which don't have neighboring mines.
+        """
+        if not self.__valid_square(row, col):
+            return False
+        if self.__get_square(row, col).clicked:
+            return False
+        square = self.squares[row][col]
+        if self.game_state == GameState.start:
+            square.mine = False
+            for neighbor in square.neighbors():
+                neighbor.mine = False
+            self.game_state = GameState.on_going
+        if square.mine:
+            self.game_state = GameState.lose
+            return True
+        square.clicked = True
+        if square.mine_neighbors() == 0:
+            for neighbor in square.neighbors():
+                if not neighbor.mine:
+                    if neighbor.mine_neighbors() == 0:
+                        self.click_square(neighbor.row, neighbor.col)
+                    neighbor.clicked = True
+        if self.__win():
+            self.game_state = GameState.win
+        return True
 
-    def get_square(self, row, col):
+    def print_board(self):
+        """
+            Prints the board. If a square is clicked and does not border
+            mines, print " ". If a square is clicked and
+                does border mines, print the number of neighboring
+            mines. ELse print "?".
+        """
+        col_print = "    "
+        for i in range(0, self.cols):
+            col_print += str(i) + "  "
+        print(col_print)
+        print("")
+        for i,row in enumerate(self.squares):
+            row_print = str(i) + "  "
+            for i, square in enumerate(row):
+                if square.clicked:
+                    row_print += " " + str(square.mine_neighbors()) + " "
+                else:
+                    row_print += " . "
+            print(row_print)
+
+    def __win(self):
+        for row in self.squares:
+            for square in row:
+                if not square.mine and not square.clicked:
+                    return False
+        return True
+
+    def __get_square(self, row, col):
         """ Return the square at the given row and column."""
         return self.squares[row][col]
 
-    def print_board(self):
-        pass
+    def __valid_square(self, row, col):
+        return (row < self.rows and row >= 0) and (col < self.cols and col >= 0)
 
     def __create_squares(self, cols, rows, mines_percentage):
         """
@@ -52,7 +117,15 @@ class Square:
         self.mine = mine
         self.clicked = False
 
+    def mine_neighbors(self):
+        return len(list(filter(lambda square: square.mine, [self.board.squares[point[0]][point[1]] for point in self.__point_neighbors()])))
+
     def neighbors(self):
+        return [self.board.squares[point[0]][point[1]] for point in self.__point_neighbors()]
+
+    def __point_neighbors(self):
         row_neighbors = list(filter(lambda val: val >= 0 and val < self.board.rows, [self.row-1, self.row, self.row+1])) 
         col_neighbors = list(filter(lambda val: val >= 0 and val < self.board.cols, [self.col-1, self.col, self.col+1]))
-        return set(itertools.product(row_neighbors, col_neighbors)).remove((self.row, self.col))
+        neighbor_set = set(itertools.product(row_neighbors, col_neighbors))
+        neighbor_set.remove((self.row, self.col))
+        return list(neighbor_set)

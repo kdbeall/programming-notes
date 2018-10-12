@@ -24,7 +24,7 @@ class TestSquare(unittest.TestCase):
         """ Tests getting a squares neighbors. """
         board = Board(2, 2)
         square = Square(board, 0 ,0, False)
-        print(square.neighbors())
+        self.assertEqual(3, len(square.neighbors()))
 
 class TestBoard(unittest.TestCase):
 
@@ -32,6 +32,7 @@ class TestBoard(unittest.TestCase):
         board = Board(3, 3)
         self.assertEqual(3, board.cols)
         self.assertEqual(3, board.rows)
+        board.print_board()
 
     def test_board__init__percentage(self):
         """ Tests mine percentages are calculated correctly. """
@@ -40,29 +41,6 @@ class TestBoard(unittest.TestCase):
         max_mines = (cols-1)*(rows-1)
         mines_percent = 100 * max_mines / (rows*cols)
         self.assertEqual(64, mines_percent)
-
-    def test_board_get_square(self):
-        board = Board(3, 3)
-        self.assertFalse(board.get_square(0, 0).clicked)
-
-
-class TestGame(unittest.TestCase):
-    def test_game__init__(self):
-        game = Game()
-        self.assertEqual(10, game.board.rows)
-        self.assertEqual(GameState.on_going, game.game_state)
-
-    def test_game_click_square(self):
-        """
-            Checks that the game is properly updated
-            when a square is clicked.
-        """
-        game = Game()
-        game.click_square(0, 0)
-        self.assertTrue(game.board.get_square(0, 0).clicked)
-        game.board.get_square(0, 1).mine = True
-        game.click_square(0, 1)
-        self.assertEqual(GameState.lose, game.game_state)
 
 
 
