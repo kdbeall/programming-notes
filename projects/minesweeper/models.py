@@ -22,6 +22,15 @@ class Board:
         mines_percentage = (100 * self.max_mines / (rows*cols))/3
         self.__create_squares(self.cols, self.rows, mines_percentage)
     
+
+    def flag_square(self, row, col):
+        if not self.__valid_square(row, col):
+            return False
+        if self.__get_square(row, col).clicked:
+            return False
+        square = self.squares[row][col]
+        square.flag = not square.flag
+
     def click_square(self, row, col):
         """ 
             Click the square and click its
@@ -66,9 +75,13 @@ class Board:
             for i, square in enumerate(row):
                 if square.clicked:
                     row_print += " " + str(square.mine_neighbors()) + " "
+                elif square.flag:
+                    row_print += " f "
                 else:
                     row_print += " . "
             print(row_print)
+            print("")
+
 
     def print_board_end(self):
         col_print = "    "
@@ -83,9 +96,12 @@ class Board:
                     row_print += " x "
                 elif square.clicked:
                     row_print += " " + str(square.mine_neighbors()) + " "
+                elif square.flag:
+                    row_print += " f "    
                 else:
                     row_print += " . "
             print(row_print)
+            print("")
         
 
 
@@ -132,6 +148,7 @@ class Square:
         self.row = row
         self.col = col
         self.mine = mine
+        self.flag = False
         self.clicked = False
 
     def mine_neighbors(self):
