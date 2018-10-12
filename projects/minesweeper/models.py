@@ -53,10 +53,8 @@ class Board:
 
     def print_board(self):
         """
-            Prints the board. If a square is clicked and does not border
-            mines, print " ". If a square is clicked and
-                does border mines, print the number of neighboring
-            mines. ELse print "?".
+            Prints the board. If a square is clicked, 
+            print the number of neighboring mines. Else print ".".
         """
         col_print = "    "
         for i in range(0, self.cols):
@@ -71,6 +69,25 @@ class Board:
                 else:
                     row_print += " . "
             print(row_print)
+
+    def print_board_end(self):
+        col_print = "    "
+        for i in range(0, self.cols):
+            col_print += str(i) + "  "
+        print(col_print)
+        print("")
+        for i,row in enumerate(self.squares):
+            row_print = str(i) + "  "
+            for i, square in enumerate(row):
+                if square.mine:
+                    row_print += " x "
+                elif square.clicked:
+                    row_print += " " + str(square.mine_neighbors()) + " "
+                else:
+                    row_print += " . "
+            print(row_print)
+        
+
 
     def __win(self):
         for row in self.squares:

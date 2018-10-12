@@ -6,7 +6,7 @@ from models import Board, GameState
 class Game:
 
     def __init__(self):
-        self.board = Board(rows=10, cols=10)
+        self.board = Board(rows=5, cols=5)
 
     def play(self):
         self.welcome()
@@ -23,6 +23,11 @@ class Game:
         if self.board.game_state == GameState.lose:
             print("You hit a mine. :(")
             print("")
+            self.board.print_board_end()
+        else:
+            print("You win!")
+            print("")
+            self.board.print_board_end()
 
     def welcome(self):
         print("")
